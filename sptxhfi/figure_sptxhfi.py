@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from scipy.io.idl import readsav
 from sys import exit
 
+from hpylib.util.remote_data import *
+
 def restore_save(savfile):
 
     n = readsav(savfile)
@@ -35,4 +37,12 @@ def restore_save(savfile):
 
 def plot_spthfi_bandpower(pdf_file=None):
     
-    spt150xspt150_file = ''
+    spt150xspt150_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_spt_sn_spt_sn/end_combined_spt150sn_spt150sn.sav'
+    spt150xhfi143_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi143sn.sav'
+    spt150xhfi217_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi217sn.sav'
+    hfi143xhfi143_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_hfi_sn_hfi_sn/end_combined_hfi143sn_hfi143sn.sav'
+
+    sync_from_remote('midway', spt150xspt150_file)
+    sync_from_remote('midway', spt150xhfi143_file)
+    sync_from_remote('midway', spt150xhfi217_file)
+    sync_from_remote('midway', hfi143xhfi143_file)
