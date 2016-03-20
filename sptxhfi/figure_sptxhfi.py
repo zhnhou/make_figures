@@ -42,7 +42,7 @@ def plot_spthfi_bandpower(pdf_file=None):
     spt150xhfi217_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi217sn.sav'
     hfi143xhfi143_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_hfi_sn_hfi_sn/end_combined_hfi143sn_hfi143sn.sav'
 
-    sync_from_remote('midway', spt150xspt150_file)
-    sync_from_remote('midway', spt150xhfi143_file)
-    sync_from_remote('midway', spt150xhfi217_file)
-    sync_from_remote('midway', hfi143xhfi143_file)
+    s150     = restore_save( sync_from_remote('midway', spt150xspt150_file) )
+    s150h143 = restore_save( sync_from_remote('midway', spt150xhfi143_file) )
+    s150h217 = restore_save( sync_from_remote('midway', spt150xhfi217_file) )
+    h143     = restore_save( sync_from_remote('midway', hfi143xhfi143_file) )
