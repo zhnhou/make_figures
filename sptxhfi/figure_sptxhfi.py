@@ -75,13 +75,15 @@ def plot_spthfi_bandpower(pdf_file=None):
 
 
     fig, ax = plt.subplots()
-    ax.set_position([0.1,0.1,0.85,0.5])
+    ax.set_position([0.1,0.1,0.85,0.85])
 
-    ax.errorbar(s150['bands'], dbs_data_150, yerr=dbs_err_150, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5)
-    ax.errorbar(s150h143['bands']-10, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5)
-    ax.errorbar(s150h217['bands']+10, dbs_data_150x217, yerr=dbs_err_150x217, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5)
+    ax.errorbar(s150['bands'], dbs_data_150, yerr=dbs_err_150, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1.)
+    ax.errorbar(s150h143['bands']-10, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1.)
+    ax.errorbar(s150h217['bands']+10, dbs_data_150x217, yerr=dbs_err_150x217, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1.)
 
-    plt.xlim([600,3000])
+    plt.xlim([625,3000])
     plt.ylim([20,3000])
     plt.yscale('log')
+    plt.xlabel(r'$\ell$', fontsize=16)
+    plt.ylabel(r'$\mathcal{D}_{\ell}\ [\mathrm{\mu K^2}]$', fontsize=16)
     plt.savefig('bandpower.pdf', format='pdf')
