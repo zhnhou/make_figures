@@ -66,19 +66,22 @@ def plot_spthfi_bandpower(pdf_file=None):
     dbs_err_150x217 = np.sqrt(np.diag(s150h217['cov_sv'][1,:,1,:]))
 
 
-    dbs_data_150     = s150['dbs_data'][1,:]
-    dbs_data_150x143 = s150h143['dbs_data'][1,:] - (dbs_ave_150x143 - dbs_ave_150)
+    rescale = 1.0100
+
+    dbs_data_150     = s150['dbs_data'][1,:] * rescale**2
+    dbs_data_150x143 = (s150h143['dbs_data'][1,:] - (dbs_ave_150x143 - dbs_ave_150)) * rescale
     dbs_data_143     = h143['dbs_data'][1,:]     - (dbs_ave_143 - dbs_ave_150)
-    dbs_data_150x217 = s150h217['dbs_data'][1,:] - (dbs_ave_150x217 - dbs_ave_150)
+    dbs_data_150x217 = (s150h217['dbs_data'][1,:] - (dbs_ave_150x217 - dbs_ave_150)) * rescale
 
 
-    fig, ax = plt.subplots(nrows=1, ncols=1, sharex=True)
+    fig, ax = plt.subplots()
+    ax.set_position([0.1,0.1,0.85,0.5])
 
-    ax.errorbar(s150['bands'], dbs_data_150, yerr=dbs_err_150, fmt='o')
-    ax.errorbar(s150h143['bands']-5, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o')
-    ax.errorbar(s150h217['bands']+5, dbs_data_150x217, yerr=dbs_err_150x217, fmt='o')
+    ax.errorbar(s150['bands'], dbs_data_150, yerr=dbs_err_150, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5)
+    ax.errorbar(s150h143['bands']-10, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5)
+    ax.errorbar(s150h217['bands']+10, dbs_data_150x217, yerr=dbs_err_150x217, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5)
 
     plt.xlim([600,3000])
-    plt.ylim([40,3000])
+    plt.ylim([20,3000])
     plt.yscale('log')
-    plt.show()
+    plt.savefig('bandpower.pdf', format='pdf')
