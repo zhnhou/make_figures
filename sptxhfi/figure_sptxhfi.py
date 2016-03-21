@@ -60,13 +60,25 @@ def plot_spthfi_bandpower(pdf_file=None):
     dbs_ave_150x143 = np.mean(s150h143['dbs_sims'][:,1,:], axis=0)
     dbs_ave_150x217 = np.mean(s150h217['dbs_sims'][:,1,:], axis=0)
 
+    dbs_err_150     = np.sqrt(np.diag(s150['cov_sv'][1,:,1,:]))
+    dbs_err_143     = np.sqrt(np.diag(h143['cov_sv'][1,:,1,:]))
+    dbs_err_150x143 = np.sqrt(np.diag(s150h143['cov_sv'][1,:,1,:]))
+    dbs_err_150x217 = np.sqrt(np.diag(s150h217['cov_sv'][1,:,1,:]))
+
+
     dbs_data_150     = s150['dbs_data'][1,:]
     dbs_data_150x143 = s150h143['dbs_data'][1,:] - (dbs_ave_150x143 - dbs_ave_150)
     dbs_data_143     = h143['dbs_data'][1,:]     - (dbs_ave_143 - dbs_ave_150)
     dbs_data_150x217 = s150h217['dbs_data'][1,:] - (dbs_ave_150x217 - dbs_ave_150)
 
-    plt.semilogy(s150['bands'], s150['dbs_data'][1,:])
-    plt.semilogy(s150h217['bands'], s150h217['dbs_data'][1,:])
+
+    fig, ax = plt.subplots(nrows=1, ncols=1, sharex=True)
+
+    ax.errorbar(s150['bands'], dbs_data_150, yerr=dbs_err_150, fmt='o')
+    ax.errorbar(s150h143['bands']-5, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o')
+    ax.errorbar(s150h217['bands']+5, dbs_data_150x217, yerr=dbs_err_150x217, fmt='o')
+
     plt.xlim([600,3000])
-    plt.ylim([1,3000])
+    plt.ylim([40,3000])
+    plt.yscale('log')
     plt.show()
