@@ -46,3 +46,27 @@ def plot_spthfi_bandpower(pdf_file=None):
     s150h143 = restore_save( sync_from_remote('midway', spt150xhfi143_file) )
     s150h217 = restore_save( sync_from_remote('midway', spt150xhfi217_file) )
     h143     = restore_save( sync_from_remote('midway', hfi143xhfi143_file) )
+
+    dls_150_file     = '~/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_150.txt'
+    dls_220_file     = '~/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_220.txt'
+    dls_150x220_file = '~/data_midway/projects/sptxhfi/simulations/input/dls_ave_150x220.txt'
+
+    dls_theory_150     = np.loadtxt(sync_from_remote('midway', dls_150_file), usecols=[1])
+    dls_theory_220     = np.loadtxt(sync_from_remote('midway', dls_220_file), usecols=[1])
+    dls_theory_150x220 = np.loadtxt(sync_from_remote('midway', dls_150x220_file), usecols=[1])
+
+    dbs_ave_150     = np.mean(s150['dbs_sims'][:,1,:], axis=0)
+    dbs_ave_143     = np.mean(h143['dbs_sims'][:,1,:], axis=0)
+    dbs_ave_150x143 = np.mean(s150h143['dbs_sims'][:,1,:], axis=0)
+    dbs_ave_150x217 = np.mean(s150h217['dbs_sims'][:,1,:], axis=0)
+
+    dbs_data_150     = s150['dbs_data'][1,:]
+    dbs_data_150x143 = s150h143['dbs_data'][1,:] - (dbs_ave_150x143 - dbs_ave_150)
+    dbs_data_143     = h143['dbs_data'][1,:]     - (dbs_ave_143 - dbs_ave_150)
+    dbs_data_150x217 = s150h217['dbs_data'][1,:] - (dbs_ave_150x217 - dbs_ave_150)
+
+    plt.semilogy(s150['bands'], s150['dbs_data'][1,:])
+    plt.semilogy(s150h217['bands'], s150h217['dbs_data'][1,:])
+    plt.xlim([600,3000])
+    plt.ylim([1,3000])
+    plt.show()
