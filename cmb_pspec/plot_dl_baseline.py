@@ -15,7 +15,7 @@ ell = np.arange(lmax+1)
 fig, ax = plt.subplots()
 ax.set_position([0.1,0.1,0.85,0.85])
 
-plt.plot(ell, dl_lensed_TT, color='black')
+plt.plot(ell, dl_lensed_TT, color='deepskyblue')
 
 ax.spines['top'].set_color('white')
 ax.spines['right'].set_color('white')
@@ -24,7 +24,7 @@ ax.get_xaxis().tick_bottom()
 ax.get_yaxis().tick_left()
 
 ax.set_xlim([2,2500])
-ax.set_ylim([60,6000])
+ax.set_ylim([60,8000])
 
 #ax.set_xscale('log')
 ax.set_yscale('log')
@@ -32,7 +32,7 @@ ax.set_yscale('log')
 #plt.yticks([0.5e9,1e9,1.5e9],['5','10','15'])
 
 ax.set_xlabel(r'$\ell$', size=20)
-ax.set_ylabel(r'$\ell^2\mathcal{D}_\ell\ \mathrm{[\mu K^2]}$', size=20)
+ax.set_ylabel(r'$\mathcal{D}_\ell\ \mathrm{[\mu K^2]}$', size=20)
 
 plt.savefig(pdf_file, format='pdf')
 plt.clf()
@@ -61,7 +61,7 @@ labels = [r'$\omega_b + 20\sigma_{\omega_b}$',
           r'$\omega_b + 10\sigma_{\omega_b}$',
           r'$\omega_b = 0.02226$',
           r'$\omega_b - 10\sigma_{\omega_b}$',
-          r'$\omega_b + 20\sigma_{\omega_b}$']
+          r'$\omega_b - 20\sigma_{\omega_b}$']
 for i in np.arange(num_sample):
     plt.plot(ell, dl_lensed_TT[:,num_sample-i-1], color=colors[i], label=labels[i])
 
@@ -112,7 +112,7 @@ labels = [r'$\omega_c + 10\sigma_{\omega_c}$',
           r'$\omega_c + 5\sigma_{\omega_c}$',
           r'$\omega_c = 0.1186$',
           r'$\omega_c - 5\sigma_{\omega_c}$',
-          r'$\omega_c + 10\sigma_{\omega_c}$']
+          r'$\omega_c - 10\sigma_{\omega_c}$']
 for i in np.arange(num_sample):
     plt.plot(ell, dl_lensed_TT[:,num_sample-i-1], color=colors[i], label=labels[i])
 
@@ -163,7 +163,7 @@ labels = [r'$\Omega_k + 2\sigma_{\Omega_k}$',
           r'$\Omega_k + \sigma_{\Omega_k}$',
           r'$\Omega_k = 0.00$',
           r'$\Omega_k - \sigma_{\Omega_k}$',
-          r'$\Omega_k + 2\sigma_{\Omega_k}$']
+          r'$\Omega_k - 2\sigma_{\Omega_k}$']
 for i in np.arange(num_sample):
     plt.plot(ell, dl_lensed_TT[:,num_sample-i-1], color=colors[i], label=labels[i])
 
