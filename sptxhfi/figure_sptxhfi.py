@@ -4,6 +4,49 @@ from scipy.io.idl import readsav
 from sys import exit
 
 from hpylib.util.remote_data import *
+from hpylib.mapping.sptsz_map import *
+
+class create_map_figure(object):
+    def __init__(self, fits_file):
+        self.workspace = workspace
+        m = read_sptsz_fits(fits_file)
+
+        self.ra0dec0 = [m['ra0'], m['dec0']]
+        self.nside   = [m['nsidex'], m['nsidey']]
+        self.map_data = m['map_data']
+        self.reso_arcmin = m['reso_arcmin']
+
+    def setup_coord(self):
+        reso_deg = self.reso_arcmin / 60.00
+
+        self.xra = (self.ra0dec0[0] - 0.5*self.nside[0]*reso_deg, self.ra0dec0[0] + 0.5*self.nside[0]*reso_deg)
+        self.yra = (self.ra0dec0[1] - 0.5*self.nside[1]*reso_deg, self.ra0dec0[1] + 0.5*self.nside[1]*reso_deg)
+
+    def cut_map(self, xra, yra, replace=True):
+        reso_deg = self.reso_arcmin / 60.00
+
+        xarr = arange(0,self.nside[0])*reso_deg + self.ra0dec0[0] - 0.5*self.nside[0]*reso_deg
+        yarr = arange(0,self.nside[1])*reso_deg + self.ra0dec0[1] - 0.5*self.nside[1]*reso_deg
+
+        ipx = where((xarr >= min(xra)) & (xarr <= max(xra)))
+        ipy = where((yarr >= min(yra)) & (yarr <= max(yra)))
+
+        map2d_cut = self.map_data[ipx[0].min():(ipx[0].max()+1),ipy[0].min():(ipy[0].max()+1)]
+
+        if (replace):
+            self.map_data = map2d_cut
+            self.xra = xra
+            self.yra = yra
+
+
+        return map2d_cut
+
+    def make_figure(self, map_image, vmin=None, vmax=None):
+        fig, ax = plt.subplots()
+
+        xra = self.xra
+        yra = self.yra
+
 
 def restore_save(savfile):
 
