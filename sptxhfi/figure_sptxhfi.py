@@ -8,7 +8,7 @@ from hpylib.mapping.sptsz_map import *
 
 class create_map_figure(object):
     def __init__(self, fits_file):
-        self.workspace = workspace
+        self.fits_file = fits_file
         m = read_sptsz_fits(fits_file)
 
         self.ra0dec0 = [m['ra0'], m['dec0']]
@@ -16,6 +16,8 @@ class create_map_figure(object):
         self.map_data = m['map_data']
         self.reso_arcmin = m['reso_arcmin']
 
+        self.setup_coord()
+        
     def setup_coord(self):
         reso_deg = self.reso_arcmin / 60.00
 
@@ -25,11 +27,11 @@ class create_map_figure(object):
     def cut_map(self, xra, yra, replace=True):
         reso_deg = self.reso_arcmin / 60.00
 
-        xarr = arange(0,self.nside[0])*reso_deg + self.ra0dec0[0] - 0.5*self.nside[0]*reso_deg
-        yarr = arange(0,self.nside[1])*reso_deg + self.ra0dec0[1] - 0.5*self.nside[1]*reso_deg
+        xarr = np.arange(0,self.nside[0])*reso_deg + self.ra0dec0[0] - 0.5*self.nside[0]*reso_deg
+        yarr = np.arange(0,self.nside[1])*reso_deg + self.ra0dec0[1] - 0.5*self.nside[1]*reso_deg
 
-        ipx = where((xarr >= min(xra)) & (xarr <= max(xra)))
-        ipy = where((yarr >= min(yra)) & (yarr <= max(yra)))
+        ipx = np.where((xarr >= min(xra)) & (xarr <= max(xra)))
+        ipy = np.where((yarr >= min(yra)) & (yarr <= max(yra)))
 
         map2d_cut = self.map_data[ipx[0].min():(ipx[0].max()+1),ipy[0].min():(ipy[0].max()+1)]
 
@@ -41,11 +43,26 @@ class create_map_figure(object):
 
         return map2d_cut
 
-    def make_figure(self, map_image, vmin=None, vmax=None):
+    def make_figure(self, map_image=None, vmin=None, vmax=None, xticks=None, yticks=None, xtitle=None, ytitle=None, xfontsize=None, yfontsize=None):
         fig, ax = plt.subplots()
 
         xra = self.xra
         yra = self.yra
+
+        if (map_image is None):
+            map_image = self.map_data
+
+        im = plt.imshow(map_image, cmap=plt.get_cmap('bone'), extent=(xra[0],xra[1],yra[0],yra[1]), vmin=vmin, vmax=vmax, interpolation='bicubic')
+
+        cbar = fig.colorbar(im, orientation='horizontal')
+        cbar.solids.set_edgecolor("face")
+
+        if xticks != None: plt.xticks(xticks, fontsize=xfontsize)
+        if yticks != None: plt.yticks(yticks, fontsize=yfontsize)
+        if xtitle != None: plt.xlabel(xtitle, fontsize=xfontsize)
+        if ytitle != None: plt.ylabel(ytitle, fontsize=yfontsize)
+
+
 
 
 def restore_save(savfile):
