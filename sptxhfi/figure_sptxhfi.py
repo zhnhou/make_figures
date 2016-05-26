@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io.idl import readsav
 from sys import exit
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from hpylib.util.remote_data import *
 from hpylib.mapping.sptsz_map import *
@@ -13,7 +14,7 @@ class create_map_figure(object):
 
         self.ra0dec0 = [m['ra0'], m['dec0']]
         self.nside   = [m['nsidex'], m['nsidey']]
-        self.map_data = m['map_data']
+        self.map_data = np.flipud(m['map_data'])
         self.reso_arcmin = m['reso_arcmin']
 
         self.setup_coord()
@@ -33,7 +34,7 @@ class create_map_figure(object):
         ipx = np.where((xarr >= min(xra)) & (xarr <= max(xra)))
         ipy = np.where((yarr >= min(yra)) & (yarr <= max(yra)))
 
-        map2d_cut = self.map_data[ipx[0].min():(ipx[0].max()+1),ipy[0].min():(ipy[0].max()+1)]
+        map2d_cut = self.map_data[ipy[0].min():(ipy[0].max()+1),ipx[0].min():(ipx[0].max()+1)]
 
         if (replace):
             self.map_data = map2d_cut
@@ -42,27 +43,6 @@ class create_map_figure(object):
 
 
         return map2d_cut
-
-    def make_figure(self, map_image=None, vmin=None, vmax=None, xticks=None, yticks=None, xtitle=None, ytitle=None, xfontsize=None, yfontsize=None):
-        fig, ax = plt.subplots()
-
-        xra = self.xra
-        yra = self.yra
-
-        if (map_image is None):
-            map_image = self.map_data
-
-        im = plt.imshow(map_image, cmap=plt.get_cmap('bone'), extent=(xra[0],xra[1],yra[0],yra[1]), vmin=vmin, vmax=vmax, interpolation='bicubic')
-
-        cbar = fig.colorbar(im, orientation='horizontal')
-        cbar.solids.set_edgecolor("face")
-
-        if xticks != None: plt.xticks(xticks, fontsize=xfontsize)
-        if yticks != None: plt.yticks(yticks, fontsize=yfontsize)
-        if xtitle != None: plt.xlabel(xtitle, fontsize=xfontsize)
-        if ytitle != None: plt.ylabel(ytitle, fontsize=yfontsize)
-
-
 
 
 def restore_save(savfile):
