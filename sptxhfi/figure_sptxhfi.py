@@ -45,7 +45,7 @@ class create_map_figure(object):
 
 class create_residual_figure(object):
 
-    def __init__(self, endsav1, endsav2, dim1=1, dim2=1, rescale1=1.00, rescale2=1.00):
+    def __init__(self, endsav1, endsav2, dim1=1, dim2=1, rescale1=1.00, rescale2=1.00, res_beam_cov=None):
         self.endsav1 = endsav1
         self.endsav2 = endsav2
 
@@ -54,6 +54,8 @@ class create_residual_figure(object):
 
         self.dim1 = dim1
         self.dim2 = dim2
+
+        self.res_beam_cov = res_beam_cov
 
         if (end1['bands'] != end2['bands']):
             print "The band definition of two end2end files are different"
@@ -68,7 +70,18 @@ class create_residual_figure(object):
 
         res_end1_end2 = self.end1['dbs_data'][self.dim1,:]*self.rescale1 - self.end2['dbs_data'][self.dim2,:]*self.rescale2 - winfunc_corr
 
-        res_sims = 
+        res_sims = self.end1['dbs_sims'][:,self.dim1,:] - self.end2['dbs_sims'][:,self.dim2,:]
+        cov = np.cov(res_sims.transpose())
+
+        if (not self.res_beam_cov):
+            cov += self.res_beam_cov
+
+        d = {'res_data':res_end1_end2, 'res_cov':cov}
+
+        self.res_info = d
+
+    def make_residual_figure(self):
+
 
 
 def restore_save(savfile):
