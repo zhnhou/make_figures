@@ -20,8 +20,8 @@ map2d_hfi = np.flipud(mf_hfi.cut_map(xra,yra)) * 1e6
 yticks = [-60, -55, -50]
 xticks = [348, 352, 356]
 
-vmax = 50
-vmin = -50
+vmax = 100
+vmin = -100
 
 fig, ax = plt.subplots()
 
@@ -31,12 +31,12 @@ im = plt.imshow(map2d_spt-map2d_hfi, cmap=plt.get_cmap('bone'), extent=(xra[0],x
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.2)
 
-cbar = fig.colorbar(im, ticks=(-50,-25,0,25,50), orientation='vertical', cax=cax,
+cbar = fig.colorbar(im, ticks=(-100,-50,0,50,100), orientation='vertical', cax=cax,
                     drawedges=False)
 
 cbar.solids.set_edgecolor("face")
 cbar.ax.set_ylabel('$\Delta T\;[\mu\mathrm{K}]$', fontsize=16)
-cbar.ax.axes.set_yticklabels(["$-50$","$-25$","$0$","$25$","$50$"], fontsize=16)
+cbar.ax.axes.set_yticklabels(["$-100$","$-50$","$0$","$50$","$100$"], fontsize=16)
 cbar.outline.set_edgecolor('black')
 cbar.outline.set_linewidth(1.2)
 
@@ -52,6 +52,6 @@ ax.set_ylabel(' ', fontsize=16)
 ax.axes.set_xticklabels(["$348^{\circ}$","$352^{\circ}$","$356^{\circ}$"], fontsize=16)
 ax.axes.set_yticklabels([" ", " "," "," "," "], fontsize=16)
 
-fig_file = 'map_diff.pdf'
+fig_file = 'map_diff_pm100.pdf'
 plt.savefig(fig_file, format='pdf', transparent=True)
 plt.clf()

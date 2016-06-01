@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io.idl import readsav
-from sys import exit
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from hpylib.util.remote_data import *
 from hpylib.mapping.sptsz_map import *
+from hpylib.util.sptsz_end2end import *
 
 class create_map_figure(object):
     def __init__(self, fits_file):
@@ -41,8 +41,34 @@ class create_map_figure(object):
             self.xra = xra
             self.yra = yra
 
-
         return map2d_cut
+
+class create_residual_figure(object):
+
+    def __init__(self, endsav1, endsav2, dim1=1, dim2=1, rescale1=1.00, rescale2=1.00):
+        self.endsav1 = endsav1
+        self.endsav2 = endsav2
+
+        self.end1 = restore_end_save(self.endsav1)
+        self.end2 = restore_end_save(self.endsav2)
+
+        self.dim1 = dim1
+        self.dim2 = dim2
+
+        if (end1['bands'] != end2['bands']):
+            print "The band definition of two end2end files are different"
+            exit()
+
+    def process_end(self):
+        
+        end1_sims_mean = self.end1['dbs_sims'][:,self.dim1,:].mean(axis=0)
+        end2_sims_mean = self.end2['dbs_sims'][:,self.dim2,:].mean(axis=0)
+
+        winfunc_corr = end1_sims_mean - end2_sims_mean
+
+        res_end1_end2 = self.end1['dbs_data'][self.dim1,:]*self.rescale1 - self.end2['dbs_data'][self.dim2,:]*self.rescale2 - winfunc_corr
+
+        res_sims = 
 
 
 def restore_save(savfile):
