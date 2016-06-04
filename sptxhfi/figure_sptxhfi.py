@@ -45,12 +45,10 @@ class create_map_figure(object):
 
 class create_residual_figure(object):
 
-    def __init__(self, endsav1, endsav2, dim1=1, dim2=1, rescale1=1.00, rescale2=1.00, res_beam_cov=None):
-        self.endsav1 = endsav1
-        self.endsav2 = endsav2
+    def __init__(self, end1, end2, dim1=1, dim2=1, rescale1=1.00, rescale2=1.00, res_beam_cov=None):
 
-        self.end1 = restore_end_save(self.endsav1)
-        self.end2 = restore_end_save(self.endsav2)
+        self.end1 = end1
+        self.end2 = end2
 
         self.dim1 = dim1
         self.dim2 = dim2
@@ -81,6 +79,11 @@ class create_residual_figure(object):
         self.res_info = d
 
     def make_residual_figure(self):
+
+        fig, ax = plt.subplot()
+
+        ax.set_position([0.1,0.1,0.85,0.85])
+        ax.errorbar(self.end1['bands'], self.res_info['res_data'])
 
 
 
