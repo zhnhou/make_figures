@@ -55,7 +55,7 @@ class create_residual_figure(object):
 
         self.res_beam_cov = res_beam_cov
 
-        if (end1['bands'] != end2['bands']):
+        if (not np.array_equal(end1['bands'], end2['bands']) ):
             print "The band definition of two end2end files are different"
             exit()
 
