@@ -82,9 +82,10 @@ class create_residual_figure(object):
 
         fig, ax = plt.subplot()
 
-        ax.set_position([0.1,0.1,0.85,0.85])
-        ax.errorbar(self.end1['bands'], self.res_info['res_data'])
+        diag = self.res_info['res_cov']
 
+        ax.set_position([0.1,0.1,0.85,0.85])
+#ax.errorbar(self.end1['bands'], self.res_info['res_data'], yerr=, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1., label=None)
 
 
 def restore_save(savfile):
