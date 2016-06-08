@@ -20,6 +20,6 @@ end_150x143['dbs_data'] = end_base['dbs_data']
 
 #print np.array_equal(end_150x143['bands'], end_150x150['bands'])
 
-residual = create_residual_figure(end_150x143, end_150x150)
+residual = create_residual_figure(end_150x143, end_150x150, rescale1=rescale, rescale2=rescale**2)
 
-#residual.process_end()
+residual.process_end()

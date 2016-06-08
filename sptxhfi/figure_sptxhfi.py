@@ -53,6 +53,9 @@ class create_residual_figure(object):
         self.dim1 = dim1
         self.dim2 = dim2
 
+        self.rescale1 = rescale1
+        self.rescale2 = rescale2
+
         self.res_beam_cov = res_beam_cov
 
         if (not np.array_equal(end1['bands'], end2['bands']) ):
@@ -71,7 +74,7 @@ class create_residual_figure(object):
         res_sims = self.end1['dbs_sims'][:,self.dim1,:] - self.end2['dbs_sims'][:,self.dim2,:]
         cov = np.cov(res_sims.transpose())
 
-        if (not self.res_beam_cov):
+        if (not (self.res_beam_cov is None)):
             cov += self.res_beam_cov
 
         d = {'res_data':res_end1_end2, 'res_cov':cov}
