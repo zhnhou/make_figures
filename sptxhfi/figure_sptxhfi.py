@@ -98,6 +98,8 @@ class create_residual_figure(object):
         error_150x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_150x143_150x150']))
         error_143x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_143x143_150x150']))
 
+        xticks = [1000,1500,2000,2500]
+
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
         ax1.set_position([0.1,0.45,0.85,0.35])
@@ -105,13 +107,18 @@ class create_residual_figure(object):
         ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2.)
         ax1.set_xlim([625,2525])
         ax1.set_ylim([-55,55])
+        ax1.set_xticks(xticks)
+        ax1.axes.set_xticklabels([" "," "," "," "])
 
-        ax2 = fig.add_subplot(212, sharex=ax1)
+        ax2 = fig.add_subplot(212)
         ax2.set_position([0.1,0.1,0.85,0.35])
         ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2.)
         ax2.set_xlim([625,2525])
-        ax2.set_ylim([-149,149])
+        ax2.set_ylim([-137.5,137.5])
 
+        ax2.set_xticks(xticks)
+        ax2.axes.set_xticklabels(["$1000$","$1500$","$2000$","$2500$"])
+        
         plt.savefig('test.pdf', format='pdf')
         plt.clf()
 
