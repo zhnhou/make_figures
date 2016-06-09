@@ -45,51 +45,75 @@ class create_map_figure(object):
 
 class create_residual_figure(object):
 
-    def __init__(self, end1, end2, dim1=1, dim2=1, rescale1=1.00, rescale2=1.00, res_beam_cov=None):
+    def __init__(self, end_143x143, end_150x143, end_150x150, res_beam_cov=None):
 
-        self.end1 = end1
-        self.end2 = end2
+        self.end_143x143 = end_143x143
+        self.end_150x143 = end_150x143
+        self.end_150x150 = end_150x150
 
-        self.dim1 = dim1
-        self.dim2 = dim2
 
-        self.rescale1 = rescale1
-        self.rescale2 = rescale2
+        self.rescale_143x143 = 1.00
+        self.rescale_150x143 = 1.0087800
+        self.rescale_150x150 = 1.0087800**2
 
         self.res_beam_cov = res_beam_cov
 
-        if (not np.array_equal(end1['bands'], end2['bands']) ):
+        if (not np.array_equal(end_150x143['bands'], end_150x150['bands']) ):
+            print "The band definition of two end2end files are different"
+            exit()
+
+        if (not np.array_equal(end_143x143['bands'], end_150x150['bands']) ):
             print "The band definition of two end2end files are different"
             exit()
 
     def process_end(self):
         
-        end1_sims_mean = self.end1['dbs_sims'][:,self.dim1,:].mean(axis=0)
-        end2_sims_mean = self.end2['dbs_sims'][:,self.dim2,:].mean(axis=0)
+        end_143x143_sims_mean = self.end_143x143['dbs_sims'][:,1,:].mean(axis=0)
+        end_150x143_sims_mean = self.end_150x143['dbs_sims'][:,1,:].mean(axis=0)
+        end_150x150_sims_mean = self.end_150x150['dbs_sims'][:,1,:].mean(axis=0)
 
-        winfunc_corr = end1_sims_mean - end2_sims_mean
+        winfunc_corr_150x143_150x150 = end_150x143_sims_mean - end_150x150_sims_mean
+        winfunc_corr_143x143_150x150 = end_143x143_sims_mean - end_150x150_sims_mean
 
-        res_end1_end2 = self.end1['dbs_data'][self.dim1,:]*self.rescale1 - self.end2['dbs_data'][self.dim2,:]*self.rescale2 - winfunc_corr
+        res_150x143_150x150 = self.end_150x143['dbs_data'][1,:]*self.rescale_150x143 - self.end_150x150['dbs_data'][1,:]*self.rescale_150x150 - winfunc_corr_150x143_150x150
+        res_143x143_150x150 = self.end_143x143['dbs_data'][1,:]*self.rescale_143x143 - self.end_150x150['dbs_data'][1,:]*self.rescale_150x150 - winfunc_corr_143x143_150x150
 
-        res_sims = self.end1['dbs_sims'][:,self.dim1,:] - self.end2['dbs_sims'][:,self.dim2,:]
-        cov = np.cov(res_sims.transpose())
 
-        if (not (self.res_beam_cov is None)):
-            cov += self.res_beam_cov
+        res_sims_150x143_150x150 = self.end_150x143['dbs_sims'][:,1,:] - self.end_150x150['dbs_sims'][:,1,:]
+        res_sims_143x143_150x150 = self.end_143x143['dbs_sims'][:,1,:] - self.end_150x150['dbs_sims'][:,1,:]
 
-        d = {'res_data':res_end1_end2, 'res_cov':cov}
+        cov_150x143_150x150 = np.cov(res_sims_150x143_150x150.transpose())
+        cov_143x143_150x150 = np.cov(res_sims_143x143_150x150.transpose())
+
+        #if (not (self.res_beam_cov is None)):
+            #cov += self.res_beam_cov
+
+        d = {'res_data_150x143_150x150':res_150x143_150x150, 'res_cov_150x143_150x150':cov_150x143_150x150,
+             'res_data_143x143_150x150':res_143x143_150x150, 'res_cov_143x143_150x150':cov_143x143_150x150}
 
         self.res_info = d
 
     def make_residual_figure(self):
 
-        fig, ax = plt.subplot()
+        error_150x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_150x143_150x150']))
+        error_143x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_143x143_150x150']))
 
-        diag = self.res_info['res_cov']
+        fig = plt.figure()
+        ax1 = fig.add_subplot(211)
+        ax1.set_position([0.1,0.45,0.85,0.35])
 
-        ax.set_position([0.1,0.1,0.85,0.85])
-#ax.errorbar(self.end1['bands'], self.res_info['res_data'], yerr=, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1., label=None)
+        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2.)
+        ax1.set_xlim([625,2525])
+        ax1.set_ylim([-55,55])
 
+        ax2 = fig.add_subplot(212, sharex=ax1)
+        ax2.set_position([0.1,0.1,0.85,0.35])
+        ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2.)
+        ax2.set_xlim([625,2525])
+        ax2.set_ylim([-149,149])
+
+        plt.savefig('test.pdf', format='pdf')
+        plt.clf()
 
 def restore_save(savfile):
 
