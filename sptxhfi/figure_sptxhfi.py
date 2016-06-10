@@ -53,8 +53,8 @@ class create_residual_figure(object):
 
 
         self.rescale_143x143 = 1.00
-        self.rescale_150x143 = 1.0087800
-        self.rescale_150x150 = 1.0087800**2
+        self.rescale_150x143 = 1.0090700
+        self.rescale_150x150 = 1.0090700**2
 
         self.res_beam_cov = res_beam_cov
 
@@ -85,8 +85,15 @@ class create_residual_figure(object):
         cov_150x143_150x150 = np.cov(res_sims_150x143_150x150.transpose())
         cov_143x143_150x150 = np.cov(res_sims_143x143_150x150.transpose())
 
-        #if (not (self.res_beam_cov is None)):
-            #cov += self.res_beam_cov
+        error_150x143_150x150_nobeam = np.sqrt(np.diag(cov_150x143_150x150))
+        error_143x143_150x150_nobeam = np.sqrt(np.diag(cov_143x143_150x150))
+
+        self.error_150x143_150x150_nobeam = error_150x143_150x150_nobeam
+        self.error_143x143_150x150_nobeam = error_143x143_150x150_nobeam
+
+        if (not (self.res_beam_cov is None)):
+            cov_150x143_150x150 += self.res_beam_cov['d21d21']
+            cov_143x143_150x150 += self.res_beam_cov['d31d31']
 
         d = {'res_data_150x143_150x150':res_150x143_150x150, 'res_cov_150x143_150x150':cov_150x143_150x150,
              'res_data_143x143_150x150':res_143x143_150x150, 'res_cov_143x143_150x150':cov_143x143_150x150}
@@ -104,7 +111,9 @@ class create_residual_figure(object):
         ax1 = fig.add_subplot(211)
         ax1.set_position([0.1,0.45,0.85,0.35])
 
-        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2.)
+        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2.)
+#ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=self.error_150x143_150x150_nobeam, fmt='o', markersize='0', elinewidth=2, capsize=0., capthick=2.)
+        
         ax1.set_xlim([625,2525])
         ax1.set_ylim([-55,55])
         ax1.set_xticks(xticks)
