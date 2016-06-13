@@ -105,28 +105,44 @@ class create_residual_figure(object):
         error_150x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_150x143_150x150']))
         error_143x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_143x143_150x150']))
 
-        xticks = [1000,1500,2000,2500]
+        yticks = [-40, -20, 0, 20, 40]
+        xticks = [650,1000,1500,2000,2500]
 
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
-        ax1.set_position([0.1,0.45,0.85,0.35])
+        ax1.set_position([0.13,0.50,0.85,0.35])
 
-        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2.)
+        ax1.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
+        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2., zorder=3)
 #ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=self.error_150x143_150x150_nobeam, fmt='o', markersize='0', elinewidth=2, capsize=0., capthick=2.)
         
         ax1.set_xlim([625,2525])
         ax1.set_ylim([-55,55])
         ax1.set_xticks(xticks)
-        ax1.axes.set_xticklabels([" "," "," "," "])
+        ax1.set_yticks(yticks)
+        ax1.axes.set_xticklabels([" "," "," "," "," "])
+        ax1.axes.set_yticklabels(["$-40$","$-20$","$0$","$20$","$40$"], fontsize=16)
 
+        ax1.text(750, 35, r"$\mathcal{D}_b^{150 \times 143} - \mathcal{D}_b^{150 \times 150}$", fontsize=18)
+
+
+        yticks = [-100, -50, 0, 50, 100]
         ax2 = fig.add_subplot(212)
-        ax2.set_position([0.1,0.1,0.85,0.35])
-        ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2.)
+        ax2.set_position([0.13,0.15,0.85,0.35])
+        
+        ax2.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
+        ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2., zorder=3)
         ax2.set_xlim([625,2525])
         ax2.set_ylim([-137.5,137.5])
 
         ax2.set_xticks(xticks)
-        ax2.axes.set_xticklabels(["$1000$","$1500$","$2000$","$2500$"])
+        ax2.set_yticks(yticks)
+        ax2.axes.set_xticklabels(["$650$","$1000$","$1500$","$2000$","$2500$"], fontsize=16)
+        ax2.axes.set_yticklabels(["$-100$","$-50$","$0$","$50$","$100$"], fontsize=16)
+        ax2.set_xlabel("$\ell$", fontsize=20)
+
+        ax2.text(750, 87.5, r"$\mathcal{D}_b^{143 \times 143} - \mathcal{D}_b^{150 \times 150}$", fontsize=18)
+        ax2.text(400,137.5,"$\Delta \mathcal{D}_b\,[\mathrm{\mu K^2}]$", rotation=90, ha='center', va='center', fontsize=20)
         
         plt.savefig('test.pdf', format='pdf')
         plt.clf()
