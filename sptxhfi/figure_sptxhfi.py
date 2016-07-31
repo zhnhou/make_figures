@@ -177,21 +177,28 @@ def restore_save(savfile):
     return d
 
 
-def plot_spt150hfi143_bandpower(pdf_file=None):
+def plot_spt150hfi143_bandpower(pdf_file=None, wfcorr=True):
     
-    spt150xspt150_file = '~/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_spt_sn_spt_sn/end_combined_spt150sn_spt150sn.sav'
-    spt150xhfi143_file = '~/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi143sn.sav'
+    spt150xspt150_file = '/home/zhenhou/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_spt_sn_spt_sn/end_combined_spt150sn_spt150sn.sav'
+    spt150xhfi143_file = '/home/zhenhou/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi143sn.sav'
     #spt150xhfi217_file = '~/data_midway/projects/sptxhfi/pspec/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi217sn.sav'
-    hfi143xhfi143_file = '~/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_hfi_sn_hfi_sn/end_combined_hfi143sn_hfi143sn.sav'
+    hfi143xhfi143_file = '/home/zhenhou/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_hfi_sn_hfi_sn/end_combined_hfi143sn_hfi143sn.sav'
 
     s150     = restore_save( sync_from_remote('midway', spt150xspt150_file) )
     s150h143 = restore_save( sync_from_remote('midway', spt150xhfi143_file) )
     #s150h217 = restore_save( sync_from_remote('midway', spt150xhfi217_file) )
     h143     = restore_save( sync_from_remote('midway', hfi143xhfi143_file) )
 
-    dls_150_file     = '~/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_150.txt'
-    dls_220_file     = '~/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_220.txt'
-    dls_150x220_file = '~/data_midway/projects/sptxhfi/simulations/input/dls_ave_150x220.txt'
+    ellmin = 650
+    ellmax = 2500
+
+    ip_150x150 = np.where( (s150['bands'] > ellmin) & (s150['bands'] < ellmax) )[0]
+    ip_150x143 = np.where( (s150h143['bands'] > ellmin) & (s150h143['bands'] < ellmax) )[0]
+    ip_143x143 = np.where( (h143['bands'] > ellmin) & (h143['bands'] < ellmax) )[0]
+
+    dls_150_file     = '/home/zhenhou/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_150.txt'
+    dls_220_file     = '/home/zhenhou/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_220.txt'
+    dls_150x220_file = '/home/zhenhou/data_midway/projects/sptxhfi/simulations/input/dls_ave_150x220.txt'
 
     dls_theory_150     = np.loadtxt(sync_from_remote('midway', dls_150_file), usecols=[1])
     dls_theory_220     = np.loadtxt(sync_from_remote('midway', dls_220_file), usecols=[1])
@@ -202,34 +209,35 @@ def plot_spt150hfi143_bandpower(pdf_file=None):
     dbs_ave_150x143 = np.mean(s150h143['dbs_sims'][:,1,:], axis=0)
     #dbs_ave_150x217 = np.mean(s150h217['dbs_sims'][:,1,:], axis=0)
 
-    dbs_err_150     = np.sqrt(np.diag(s150['cov_sv'][1,:,1,:]))
-    dbs_err_143     = np.sqrt(np.diag(h143['cov_sv'][1,:,1,:]))
-    dbs_err_150x143 = np.sqrt(np.diag(s150h143['cov_sv'][1,:,1,:]))
+    dbs_err_150     = np.sqrt(np.diag(s150['cov_sv'][1,:,1,:]))[ip_150x150]
+    dbs_err_143     = np.sqrt(np.diag(h143['cov_sv'][1,:,1,:]))[ip_143x143]
+    dbs_err_150x143 = np.sqrt(np.diag(s150h143['cov_sv'][1,:,1,:]))[ip_150x143]
     #dbs_err_150x217 = np.sqrt(np.diag(s150h217['cov_sv'][1,:,1,:]))
-
 
     rescale = 1.0100
 
-    dbs_data_150     = s150['dbs_data'][1,:] * rescale**2
-    dbs_data_150x143 = (s150h143['dbs_data'][1,:] - (dbs_ave_150x143 - dbs_ave_150)) * rescale
-    dbs_data_143     = h143['dbs_data'][1,:]     - (dbs_ave_143 - dbs_ave_150)
-    #dbs_data_150x217 = (s150h217['dbs_data'][1,:] - (dbs_ave_150x217 - dbs_ave_150)) * rescale
+    dbs_data_150     = s150['dbs_data'][1,ip_150x150] * rescale**2
+    dbs_data_150x143 = s150h143['dbs_data'][1,ip_150x143] * rescale 
+    dbs_data_143     = h143['dbs_data'][1,ip_143x143]      
 
+    if (wfcorr):
+        dbs_data_150x143 -= (dbs_ave_150x143[ip_150x143] - dbs_ave_150[ip_150x150])
+        dbs_data_143 -= (dbs_ave_143[ip_143x143] - dbs_ave_150[ip_150x150])
 
     fig, ax = plt.subplots()
-    ax.set_position([0.1,0.1,0.85,0.85])
+    ax.set_position([0.1,0.1,0.85,0.75])
 
-    ax.errorbar(s150['bands'], dbs_data_150, yerr=dbs_err_150, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1., label=r'$\mathrm{SPT^{150}_{half1}\;\times\;SPT^{150}_{half2}}$')
-    ax.errorbar(s150h143['bands']-10, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1., label=r'$\mathrm{SPT^{150}_{full}\;\times\;HFI^{143}_{full}}$')
-    ax.errorbar(h143['bands']+10, dbs_data_143, yerr=dbs_err_143, fmt='o', markersize='0', elinewidth=1., capsize=1., capthick=1., label=r'$\mathrm{HFI^{143}_{half1}\;\times\;HFI^{143}_{half2}}$')
+    ax.errorbar(s150['bands'][ip_150x150], dbs_data_150, yerr=dbs_err_150, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{SPT^{150}_{half1}\times\;SPT^{150}_{half2}}$')
+    ax.errorbar(s150h143['bands'][ip_150x143]-12, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{SPT^{150}_{full}\times HFI^{143}_{full}}$')
+    ax.errorbar(h143['bands'][ip_143x143]+12, dbs_data_143, yerr=dbs_err_143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{HFI^{143}_{half1}\times HFI^{143}_{half2}}$')
     
-    ax.legend()
+    ax.legend(fontsize=12)
 
     if pdf_file is None:
         pdf_file = 'bandpower.pdf'
 
-    plt.xlim([625,3000])
-    plt.ylim([20,3000])
+    plt.xlim([625,2500])
+    plt.ylim([80,3000])
     plt.yscale('log')
     plt.xlabel(r'$\ell$', fontsize=16)
     plt.ylabel(r'$\mathcal{D}_{\ell}\ [\mathrm{\mu K^2}]$', fontsize=16)
