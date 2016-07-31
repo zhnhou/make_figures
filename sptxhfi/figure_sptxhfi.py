@@ -228,8 +228,8 @@ def plot_spt150hfi143_bandpower(pdf_file=None, wfcorr=True):
     ax.set_position([0.1,0.1,0.85,0.75])
 
     ax.errorbar(s150['bands'][ip_150x150], dbs_data_150, yerr=dbs_err_150, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{SPT^{150}_{half1}\times\;SPT^{150}_{half2}}$')
-    ax.errorbar(s150h143['bands'][ip_150x143]-12, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{SPT^{150}_{full}\times HFI^{143}_{full}}$')
-    ax.errorbar(h143['bands'][ip_143x143]+12, dbs_data_143, yerr=dbs_err_143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{HFI^{143}_{half1}\times HFI^{143}_{half2}}$')
+    ax.errorbar(s150h143['bands'][ip_150x143]-12, dbs_data_150x143, yerr=dbs_err_150x143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{SPT^{150}_{full}\times\;HFI^{143}_{full}}$')
+    ax.errorbar(h143['bands'][ip_143x143]+12, dbs_data_143, yerr=dbs_err_143, fmt='o', markersize='0', elinewidth=1.5, capsize=1.5, capthick=1.5, label=r'$\mathrm{HFI^{143}_{half1}\times\;HFI^{143}_{half2}}$')
     
     ax.legend(fontsize=12)
 
