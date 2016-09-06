@@ -30,9 +30,10 @@ b1['d21d31'] = b0['d21d31'][13:50,13:50]
 b1['d31d21'] = b0['d31d21'][13:50,13:50]
 
 residual = create_residual_figure(end_143x143, end_150x143, end_150x150, res_beam_cov=b1)
+#residual = create_residual_figure(end_143x143, end_150x143, end_150x150)
 
 residual.process_end()
-residual.make_residual_figure()
+residual.make_residual_figure('residual_incl_beam.pdf')
 
 
 

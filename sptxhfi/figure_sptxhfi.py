@@ -52,9 +52,14 @@ class create_residual_figure(object):
         self.end_150x150 = end_150x150
 
 
-        self.rescale_143x143 = 1.00
-        self.rescale_150x143 = 1.0090700
-        self.rescale_150x150 = 1.0090700**2
+        if (res_beam_cov is None):
+            self.rescale_143x143 = 1.00
+            self.rescale_150x143 = 1.0114900
+            self.rescale_150x150 = 1.0110200**2
+        else:
+            self.rescale_143x143 = 1.00
+            self.rescale_150x143 = 1.0090700
+            self.rescale_150x150 = 1.0090700**2
 
         self.res_beam_cov = res_beam_cov
 
@@ -100,7 +105,7 @@ class create_residual_figure(object):
 
         self.res_info = d
 
-    def make_residual_figure(self):
+    def make_residual_figure(self, pdf_file):
 
         error_150x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_150x143_150x150']))
         error_143x143_150x150 = np.sqrt(np.diag(self.res_info['res_cov_143x143_150x150']))
@@ -110,7 +115,7 @@ class create_residual_figure(object):
 
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
-        ax1.set_position([0.13,0.50,0.85,0.35])
+        ax1.set_position([0.13,0.50,0.85,0.25])
 
         ax1.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
         ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2., zorder=3)
@@ -128,7 +133,7 @@ class create_residual_figure(object):
 
         yticks = [-100, -50, 0, 50, 100]
         ax2 = fig.add_subplot(212)
-        ax2.set_position([0.13,0.15,0.85,0.35])
+        ax2.set_position([0.13,0.25,0.85,0.25])
         
         ax2.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
         ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2., zorder=3)
@@ -141,10 +146,10 @@ class create_residual_figure(object):
         ax2.axes.set_yticklabels(["$-100$","$-50$","$0$","$50$","$100$"], fontsize=16)
         ax2.set_xlabel("$\ell$", fontsize=20)
 
-        ax2.text(750, 87.5, r"$\mathcal{D}_b^{143 \times 143} - \mathcal{D}_b^{150 \times 150}$", fontsize=18)
+        ax2.text(750, 87.5, r"$\mathcal{D}_b^{143 \times 143} - \mathcal{D}_b^{150 \times150}$", fontsize=18)
         ax2.text(400,137.5,"$\Delta \mathcal{D}_b\,[\mathrm{\mu K^2}]$", rotation=90, ha='center', va='center', fontsize=20)
         
-        plt.savefig('test.pdf', format='pdf')
+        plt.savefig(pdf_file, format='pdf')
         plt.clf()
 
 def restore_save(savfile):
@@ -175,6 +180,52 @@ def restore_save(savfile):
          'cov_sv':cov_sv, 'cov_noise':cov_noise}
 
     return d
+
+class spt150hfi143(object):
+    def __init__(self, wfcorr=True):
+        self.spt150xspt150_file = '/home/zhenhou/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_spt_sn_spt_sn/end_combined_spt150sn_spt150sn.sav'
+        self.spt150xhfi143_file = '/home/zhenhou/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_spt_sn_hfi_sn/end_combined_spt150sn_hfi143sn.sav'
+        self.hfi143xhfi143_file = '/home/zhenhou/data_midway/projects/sptxhfi/pspec/run_06p4/bandpower_hfi_sn_hfi_sn/end_combined_hfi143sn_hfi143sn.sav'
+
+        self.wfcorr = wfcorr
+
+    def process_bandpower():
+        s150     = restore_save( sync_from_remote('midway', self.spt150xspt150_file) )
+        s150h143 = restore_save( sync_from_remote('midway', self.spt150xhfi143_file) )
+        h143     = restore_save( sync_from_remote('midway', self.hfi143xhfi143_file) )
+
+        ellmin = 650
+        ellmax = 2500
+
+        ip_150x150 = np.where( (s150['bands'] > ellmin) & (s150['bands'] < ellmax) )[0]
+        ip_150x143 = np.where( (s150h143['bands'] > ellmin) & (s150h143['bands'] < ellmax) )[0]
+        ip_143x143 = np.where( (h143['bands'] > ellmin) & (h143['bands'] < ellmax) )[0]
+
+        dls_150_file     = '/home/zhenhou/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_150.txt'
+        dls_220_file     = '/home/zhenhou/data_midway/projects/sptxhfi/simulations/input/dls_input_spt_220.txt'
+        dls_150x220_file = '/home/zhenhou/data_midway/projects/sptxhfi/simulations/input/dls_ave_150x220.txt'
+
+        dls_theory_150     = np.loadtxt(sync_from_remote('midway', dls_150_file), usecols=[1])
+        dls_theory_220     = np.loadtxt(sync_from_remote('midway', dls_220_file), usecols=[1])
+
+        dbs_ave_150     = np.mean(s150['dbs_sims'][:,1,:], axis=0)
+        dbs_ave_143     = np.mean(h143['dbs_sims'][:,1,:], axis=0)
+        dbs_ave_150x143 = np.mean(s150h143['dbs_sims'][:,1,:], axis=0)
+
+        self.dbs_err_150     = np.sqrt(np.diag(s150['cov_sv'][1,:,1,:]))[ip_150x150]
+        self.dbs_err_143     = np.sqrt(np.diag(h143['cov_sv'][1,:,1,:]))[ip_143x143]
+        self.dbs_err_150x143 = np.sqrt(np.diag(s150h143['cov_sv'][1,:,1,:]))[ip_150x143]
+
+        rescale = 1.0100
+
+        self.dbs_data_150     = s150['dbs_data'][1,ip_150x150] * rescale**2
+        self.dbs_data_150x143 = s150h143['dbs_data'][1,ip_150x143] * rescale 
+        self.dbs_data_143     = h143['dbs_data'][1,ip_143x143]      
+
+        if (self.wfcorr):
+            self.dbs_data_150x143 -= (dbs_ave_150x143[ip_150x143] - dbs_ave_150[ip_150x150])
+            self.dbs_data_143 -= (dbs_ave_143[ip_143x143] - dbs_ave_150[ip_150x150])
+
 
 
 def plot_spt150hfi143_bandpower(pdf_file=None, wfcorr=True):
