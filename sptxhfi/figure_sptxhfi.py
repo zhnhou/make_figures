@@ -115,7 +115,7 @@ class create_residual_figure(object):
 
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
-        ax1.set_position([0.13,0.50,0.85,0.25])
+        ax1.set_position([0.13,0.70,0.85,0.25])
 
         ax1.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
         ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2., zorder=3)
@@ -133,7 +133,7 @@ class create_residual_figure(object):
 
         yticks = [-100, -50, 0, 50, 100]
         ax2 = fig.add_subplot(212)
-        ax2.set_position([0.13,0.25,0.85,0.25])
+        ax2.set_position([0.13,0.45,0.85,0.25])
         
         ax2.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
         ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2., zorder=3)
@@ -149,7 +149,7 @@ class create_residual_figure(object):
         ax2.text(750, 87.5, r"$\mathcal{D}_b^{143 \times 143} - \mathcal{D}_b^{150 \times150}$", fontsize=18)
         ax2.text(400,137.5,"$\Delta \mathcal{D}_b\,[\mathrm{\mu K^2}]$", rotation=90, ha='center', va='center', fontsize=20)
         
-        plt.savefig(pdf_file, format='pdf')
+        plt.savefig(pdf_file, format='pdf', transparent=False)
         plt.clf()
 
 def restore_save(savfile):
