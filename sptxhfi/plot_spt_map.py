@@ -8,16 +8,16 @@ host = os.getenv('ENV_HOSTNAME')
 fits_file = home+'/data_'+host+'/spt_data/coadds/coadd_ra23h30dec-55_2008_150_lps14_0702.fits'
 mf_spt = create_map_figure(fits_file)
 
-xra = [mf_spt.ra0dec0[0]-5.00, mf_spt.ra0dec0[0]+5.00] # +/- 8 deg
-yra = [mf_spt.ra0dec0[1]-5.00, mf_spt.ra0dec0[1]+5.00] # +/- 8 deg
+xra = [mf_spt.ra0dec0[0]-4.00, mf_spt.ra0dec0[0]+4.00] # +/- 8 deg
+yra = [mf_spt.ra0dec0[1]-4.00, mf_spt.ra0dec0[1]+4.00] # +/- 8 deg
 
 print xra
 print yra
 
 map2d_spt = np.flipud(mf_spt.cut_map(xra,yra)) * 1e6 * 0.825
 
-yticks = [-60, -55, -50]
-xticks = [348, 352, 356]
+yticks = [-58, -55, -52]
+xticks = [349, 352, 355]
 
 vmax = 100
 vmin = -100
@@ -53,7 +53,7 @@ ax.set_ylabel('$\mathrm{Dec}$', fontsize=16)
 
 #ax.axes.set_xticklabels(["$348^{\circ}$","$352^{\circ}$","$356^{\circ}$"], fontsize=16)
 ax.axes.set_xticklabels([" "," "," "], fontsize=16)
-ax.axes.set_yticklabels(["$-60^{\circ}$", "$-55^{\circ}$","$-50^{\circ}$"], fontsize=16)
+ax.axes.set_yticklabels(["$-58^{\circ}$", "$-55^{\circ}$","$-52^{\circ}$"], fontsize=16)
 
 fig_file = 'map_spt150_nocbar.pdf'
 plt.savefig(fig_file, format='pdf', transparent=True)
