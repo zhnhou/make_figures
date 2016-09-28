@@ -26,7 +26,7 @@ pro smooth_spt_to_hfi
 
     tvim, (map_spt_smoothed - map_hfi)*1e6, range=[-100,100]
 
-    save, map_spt_smoothed, filename='/home/zhenhou/data_midway/spt_data/coadds/coadd_ra23h30dec-55_2008_150_smoothed_to_hfi143.fits'
+    save, map_spt_smoothed, map_hfi, filename='/home/zhenhou/data_midway/spt_data/coadds/coadd_ra23h30dec-55_2008_150_smoothed_to_hfi143.sav'
 
     stop
 end

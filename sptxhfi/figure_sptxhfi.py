@@ -118,7 +118,7 @@ class create_residual_figure(object):
         ax1.set_position([0.13,0.70,0.85,0.25])
 
         ax1.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
-        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2., zorder=3)
+        ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=error_150x143_150x150, fmt='o', markersize='0', elinewidth=2, capsize=2., capthick=2., zorder=3, color='green')
 #ax1.errorbar(self.end_150x143['bands'], self.res_info['res_data_150x143_150x150'], yerr=self.error_150x143_150x150_nobeam, fmt='o', markersize='0', elinewidth=2, capsize=0., capthick=2.)
         
         ax1.set_xlim([625,2525])
@@ -136,7 +136,7 @@ class create_residual_figure(object):
         ax2.set_position([0.13,0.45,0.85,0.25])
         
         ax2.plot([0,3000],[0,0], color='black', linewidth=0.5, zorder=0)
-        ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2., zorder=3)
+        ax2.errorbar(self.end_143x143['bands'], self.res_info['res_data_143x143_150x150'], yerr=error_143x143_150x150, fmt='o', markersize='0', elinewidth=2., capsize=2., capthick=2., zorder=3, color='blue')
         ax2.set_xlim([625,2525])
         ax2.set_ylim([-137.5,137.5])
 
@@ -149,7 +149,7 @@ class create_residual_figure(object):
         ax2.text(750, 87.5, r"$\mathcal{D}_b^{143 \times 143} - \mathcal{D}_b^{150 \times150}$", fontsize=18)
         ax2.text(400,137.5,"$\Delta \mathcal{D}_b\,[\mathrm{\mu K^2}]$", rotation=90, ha='center', va='center', fontsize=20)
         
-        plt.savefig(pdf_file, format='pdf', transparent=False)
+        plt.savefig(pdf_file, format='pdf', transparent=True)
         plt.clf()
 
 def restore_save(savfile):
