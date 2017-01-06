@@ -18,8 +18,8 @@ mf_spt = create_map_figure(fits_file)
 fits_file = home+'/data_'+host+'/projects/spt_x_planck/planck_2015/scan_filter/coadd_scanmap_fits/full/coadd_scanmap_planck_143_R2.00_full_ra23h30dec-55_2008.fits'
 mf_hfi = create_map_figure(fits_file)
 
-xra = [mf_spt.ra0dec0[0]-5.00, mf_spt.ra0dec0[0]+5.00] # +/- 8 deg
-yra = [mf_spt.ra0dec0[1]-5.00, mf_spt.ra0dec0[1]+5.00] # +/- 8 deg
+xra = [mf_spt.ra0dec0[0]-4.00, mf_spt.ra0dec0[0]+4.00] # +/- 8 deg
+yra = [mf_spt.ra0dec0[1]-4.00, mf_spt.ra0dec0[1]+4.00] # +/- 8 deg
 
 mf_spt.map_data = map_spt
 mf_hfi.map_data = map_hfi
@@ -27,10 +27,8 @@ mf_hfi.map_data = map_hfi
 map2d_spt = mf_spt.cut_map(xra,yra)
 map2d_hfi = mf_hfi.cut_map(xra,yra)
 
-
-
-yticks = [-60, -55, -50]
-xticks = [348, 352, 356]
+yticks = [-58, -55, -52]
+xticks = [349, 352, 355]
 
 vmax = 100
 vmin = -100
@@ -59,10 +57,10 @@ ax.set_xticks(xticks)
 ax.set_yticks(yticks)
 
 ax.set_xlabel("$\mathrm{RA}$", fontsize=16)
-ax.set_ylabel(' ', fontsize=16)
+ax.set_ylabel(r'$\mathrm{Dec}$', fontsize=16)
 
-ax.axes.set_xticklabels(["$348^{\circ}$","$352^{\circ}$","$356^{\circ}$"], fontsize=16)
-ax.axes.set_yticklabels([" ", " "," "," "," "], fontsize=16)
+ax.axes.set_xticklabels(["$349^{\circ}$","$352^{\circ}$","$355^{\circ}$"], fontsize=16)
+ax.axes.set_yticklabels(["$-58^{\circ}$", "$-55^{\circ}$","$-52^{\circ}$"], fontsize=16)
 
 fig_file = 'map_diff_pm100_new.pdf'
 plt.savefig(fig_file, format='pdf', transparent=True)

@@ -8,13 +8,13 @@ host = os.getenv('ENV_HOSTNAME')
 fits_file = home+'/data_'+host+'/projects/spt_x_planck/planck_2015/scan_filter/coadd_scanmap_fits/run_nofilter/full/coadd_scanmap_hfi_143_R2.00_full_ra23h30dec-55_2008.fits'
 mf_hfi = create_map_figure(fits_file)
 
-xra = [mf_hfi.ra0dec0[0]-5.00, mf_hfi.ra0dec0[0]+5.00] # +/- 9 deg
-yra = [mf_hfi.ra0dec0[1]-5.00, mf_hfi.ra0dec0[1]+5.00] # +/- 9 deg
+xra = [mf_hfi.ra0dec0[0]-4.00, mf_hfi.ra0dec0[0]+4.00] # +/- 9 deg
+yra = [mf_hfi.ra0dec0[1]-4.00, mf_hfi.ra0dec0[1]+4.00] # +/- 9 deg
 
 map2d_hfi = np.flipud(mf_hfi.cut_map(xra,yra)) * 1e6 
 
-yticks = [-60, -55, -50]
-xticks = [348, 352, 356]
+yticks = [-58, -55, -52]
+xticks = [349, 352, 355]
 
 vmax = 300
 vmin = -300

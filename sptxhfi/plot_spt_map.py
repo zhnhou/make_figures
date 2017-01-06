@@ -55,6 +55,6 @@ ax.set_ylabel('$\mathrm{Dec}$', fontsize=16)
 ax.axes.set_xticklabels([" "," "," "], fontsize=16)
 ax.axes.set_yticklabels(["$-58^{\circ}$", "$-55^{\circ}$","$-52^{\circ}$"], fontsize=16)
 
-fig_file = 'map_spt150_nocbar.pdf'
+fig_file = 'map_spt150.pdf'
 plt.savefig(fig_file, format='pdf', transparent=True)
 plt.clf()
